@@ -17,6 +17,9 @@ var mySpec = {
         transform: function(mills) { return mills*1000}
     },
     bad : {}
+    complex_thing: {
+        getter: 'complexThing'
+    }
 }
 
 var myModel = {
@@ -26,7 +29,8 @@ var myModel = {
      companyName: 'rofly',
      meta: 'some string?',
      bad: undefined,
-     seconds: 3
+     seconds: 3,
+     complexThing: function(){return 10}
  }
  
  
@@ -35,7 +39,8 @@ var desiredResult = {
      name: 'James Butler',
      team: 'rofly',
      seating: 'standard',
-     milliseconds: 3000
+     milliseconds: 3000,
+     complex_thing: 10
 }
 
 

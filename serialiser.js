@@ -28,12 +28,16 @@
  *                   // if `undefined` is returned then acts like `propertyName` didn't exist on model.
  *                   // cannot be used with explicit 'sourceKey'.
  *
- *         transform: // function, optional, function to operate on model`s `key` to produce the value.
+ *         transform: // function, optional, function to operate on model's `key` to produce the value.
  *                    // behaves like mapper except only arg is the value for the `key`.
- *                    // if `undefined` is returned then acts like `propertyName`/`sourceKey` didn't exist on model.
+ *                    // if `undefined` is returned then acts like `propertyName`/`sourceKey`/`getter` didn't exist on model.
  *                    // cannot be used with 'mapper'.
  *                    // if `sourceKey` is present then the value for that key on the model will be used
- *                    
+ *
+ *         getter:    // string, optional, name of the function to use for getting, will work like this
+ *                    // `model[getter]()`
+ *                    // cannot be used with `mapper`, or `sourceKey` 
+ *
  *         sourceKey: // string, optional, determines which key on the model this value will come from.
  *                    // cannot be used with `mapper`.
  *
@@ -168,6 +172,10 @@ function validateSpec(spec) {
             throw new TypeError(key + '.sourceKey must be a string');
         }
 
+        if ('getter' in item && typeof item.getter !== 'string') {
+            throw new TypeError(key + '.getter must be a string');
+        }
+
         //check for illegal option groups
         // X [sourceKey && mapper]
         if ('mapper' in item && 'sourceKey' in item) {
@@ -177,6 +185,14 @@ function validateSpec(spec) {
         if ('mapper' in item && 'transform' in item) {
             throw new Error(key + '.transform and ' + key + '.mapper cannot both be present')
         }
+        // X [getter && sourceKey]
+        if ('getter' in item && 'sourceKey' in item) {
+            throw new Error(key + '.sourceKey and ' + key + '.getter cannot both be present')
+        }        
+        // X [getter && transform]
+        if ('getter' in item && 'transform' in item) {
+            throw new Error(key + '.transform and ' + key + '.getter cannot both be present')
+        }        
         // X [default && optional]
         if ('default' in item && 'optional' in item) {
             throw new Error(key + '.default and ' + key + '.optional cannot both be present')
