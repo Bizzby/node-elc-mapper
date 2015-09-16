@@ -17,6 +17,9 @@ var mySpec =  {
         meta: {
             default: 'some string?'
         },
+        seconds: {
+            transform: function(milliseconds) { return milliseconds/1000}
+        },
         bad : {}
     }
 }
@@ -42,7 +45,8 @@ var serialisedData = {
      seat: 'Z',
      lastname: 'Butler',
      companyName: 'rofly',
-     seating: 'standard'
+     seating: 'standard',
+     seconds: 3000
 }
 
 var desiredResult = {
@@ -51,6 +55,7 @@ var desiredResult = {
      seat: 'standard',
      team: 'rofly',
      meta: 'some string?',
+     seconds: 3
  }
  
 

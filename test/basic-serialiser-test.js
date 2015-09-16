@@ -12,6 +12,10 @@ var mySpec = {
     seating: {
         default : 'standard'
     },
+    milliseconds: {
+        sourceKey: 'seconds'
+        transform: function(mills) { return mills*1000}
+    },
     bad : {}
 }
 
@@ -21,7 +25,8 @@ var myModel = {
      lastname: 'Butler',
      companyName: 'rofly',
      meta: 'some string?',
-     bad: undefined
+     bad: undefined,
+     seconds: 3
  }
  
  
@@ -29,7 +34,8 @@ var desiredResult = {
      id: 12,
      name: 'James Butler',
      team: 'rofly',
-     seating: 'standard'
+     seating: 'standard',
+     milliseconds: 3000
 }
 
 
