@@ -24,10 +24,16 @@
  *                   
  *         mapper:   // function, optional, fuction to operate on the model to produce
  *                   // the value for the key. it's only arg is the model. the returned value
- *                   // is then assigned to the 'propertyName'. 
- *                   // TODO: if `undefined` is returned then act like `propertyName` didn't exist on model.
+ *                   // is then assigned to the `propertyName`. 
+ *                   // if `undefined` is returned then acts like `propertyName` didn't exist on model.
  *                   // cannot be used with explicit 'sourceKey'.
- *                   
+ *
+ *         transform: // function, optional, function to operate on model`s `key` to produce the value.
+ *                    // behaves like mapper except only arg is the value for the `key`.
+ *                    // if `undefined` is returned then acts like `propertyName`/`sourceKey` didn't exist on model.
+ *                    // cannot be used with 'mapper'.
+ *                    // if `sourceKey` is present then the value for that key on the model will be used
+ *                    
  *         sourceKey: // string, optional, determines which key on the model this value will come from.
  *                    // cannot be used with `mapper`.
  *
@@ -120,6 +126,13 @@ function getDataForKeyFromModelBasedOnSpec(key, keySpec, model) {
         retval = model[key];
     }
 
+    // for safety we check that we haven't got a mapper
+    // even though validator should catch that.
+    // FIXME: can we avoid re-assigning the variable?
+    if( !keySpec.mapper && keySpec.transform ) {
+        retval = keySpec.transform(retval)
+    }
+
     if(retval === undefined && keySpec.default) {
         //FIXME: should we be cloning if we have non-primitive values?
         retval = keySpec.default;
@@ -147,6 +160,10 @@ function validateSpec(spec) {
             throw new TypeError(key + '.mapper must be a function');
         }
 
+        if ('transform' in item && typeof item.transform !== 'function') {
+            throw new TypeError(key + '.transform must be a function');
+        }
+
         if ('sourceKey' in item && typeof item.sourceKey !== 'string') {
             throw new TypeError(key + '.sourceKey must be a string');
         }
@@ -155,6 +172,10 @@ function validateSpec(spec) {
         // X [sourceKey && mapper]
         if ('mapper' in item && 'sourceKey' in item) {
             throw new Error(key + '.sourceKey and ' + key + '.mapper cannot both be present')
+        }
+        // X [mapper && transform]
+        if ('mapper' in item && 'transform' in item) {
+            throw new Error(key + '.transform and ' + key + '.mapper cannot both be present')
         }
         // X [default && optional]
         if ('default' in item && 'optional' in item) {

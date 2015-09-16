@@ -34,6 +34,12 @@
                       // TODO: if 'undefined' is returned then act like `propertyName` didn't exist in the serialisedData.
                       // cannot be used with explicit `sourceKey`.
 
+           transform: // function, optional, function to operate on model`s `key` to produce the value.
+                      // behaves like mapper except only arg is the value for the `key`.
+                      // if `undefined` is returned then acts like `propertyName`/`sourceKey` didn't exist on model.
+                      // cannot be used with 'mapper'.
+                      // if `sourceKey` is present then the value for that key on the model will be used
+
             setter:   // string, optional, name of the function to use for setting, will work like this sort
                       // `model[setter](data)` where data is either returned from `mapper`, or `sourceKey`, or `propertyName`
 
@@ -129,6 +135,13 @@ function getValueForKeyFromDataBasedOnSpec(key, keySpec, serialisedData) {
         retval = serialisedData[key];
     }
 
+    // for safety we check that we haven't got a mapper
+    // even though validator should catch that.
+    // FIXME: can we avoid re-assigning the variable?
+    if( !keySpec.mapper && keySpec.transform ) {
+        retval = keySpec.transform(retval)
+    }
+
     if(retval === undefined && keySpec.default) {
         //FIXME: should we be cloning if we have non-primitive values?
         retval = keySpec.default;
@@ -167,6 +180,10 @@ function validateSpec(spec) {
             throw new TypeError(key + '.mapper must be a function');
         }
 
+        if ('transform' in item && typeof item.transform !== 'function') {
+            throw new TypeError(key + '.transform must be a function');
+        }
+
         if ('sourceKey' in item && typeof item.sourceKey !== 'string') {
             throw new TypeError(key + '.sourceKey must be a string');
         }
@@ -179,6 +196,10 @@ function validateSpec(spec) {
         // X [sourceKey && mapper]
         if ('mapper' in item && 'sourceKey' in item) {
             throw new Error(key + '.sourceKey and ' + key + '.mapper cannot both be present')
+        }
+        // X [mapper && transform]
+        if ('mapper' in item && 'transform' in item) {
+            throw new Error(key + '.transform and ' + key + '.mapper cannot both be present')
         }
         // X [default && optional]
         if ('default' in item && 'optional' in item) {
