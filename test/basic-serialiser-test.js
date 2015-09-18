@@ -1,5 +1,5 @@
 var assert = require('assert');
-var serialiser = require('../serialiser');
+var serialiser = require('../');
 
 var mySpec = {
     id: {},

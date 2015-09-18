@@ -1,5 +1,5 @@
 var assert = require('assert');
-var deserialiser = require('../deserialiser');
+var deserialiser = require('../');
 
 var mySpec =  {  
     factory: function(){return new SomeUser()},
