@@ -1,6 +1,6 @@
 {
   "name": "elc-mapper",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "an experimental mapper library",
   "main": "index.js",
   "scripts": {
