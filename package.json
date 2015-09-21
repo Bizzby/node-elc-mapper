@@ -4,12 +4,16 @@
   "description": "an experimental mapper library",
   "main": "index.js",
   "scripts": {
-    "test": "node test/*"
+    "test": "tap test/*.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Bizzby/node-elc-mapper.git"
   },
   "author": "sandfox",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "tap": "^1.4.1"
+  }
 }

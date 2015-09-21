@@ -1,4 +1,4 @@
-var assert = require('assert');
+var tap = require('tap');
 var serialiser = require('../');
 
 var mySpec = {
@@ -13,10 +13,10 @@ var mySpec = {
         default : 'standard'
     },
     milliseconds: {
-        sourceKey: 'seconds'
+        sourceKey: 'seconds',
         transform: function(mills) { return mills*1000}
     },
-    bad : {}
+    bad : {},
     complex_thing: {
         getter: 'complexThing'
     }
@@ -48,4 +48,4 @@ var mySerialiser = serialiser.createSerialiser(mySpec);
 
 var actualResult = mySerialiser(myModel);
 
-assert.deepEqual(actualResult, desiredResult);
+tap.deepEqual(actualResult, desiredResult);

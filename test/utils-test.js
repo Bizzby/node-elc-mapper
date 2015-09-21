@@ -1,4 +1,4 @@
-var assert = require('assert');
+var tap = require('tap');
 var utils = require('../lib/utils');
 
 function illegalOptionSet(){
@@ -12,7 +12,7 @@ function illegalOptionSet(){
     utils.illegalOptionPairCheck('launch', 'crash', key, item);
 }
 
-assert.throws(illegalOptionSet, /superTed\.launch and superTed\.crash cannot both be present/)
+tap.throws(illegalOptionSet, /superTed\.launch and superTed\.crash cannot both be present/)
 
 
 function badTypeCheck(){
@@ -28,4 +28,4 @@ function badTypeCheck(){
 }
 
 // key + '.' + item + ' must be a ' + typeName
-assert.throws(badTypeCheck, /projectIdentifier\.mapper must be a function/)
+tap.throws(badTypeCheck, /projectIdentifier\.mapper must be a function/)

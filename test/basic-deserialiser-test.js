@@ -1,4 +1,4 @@
-var assert = require('assert');
+var tap = require('tap');
 var deserialiser = require('../');
 
 var mySpec =  {  
@@ -64,4 +64,4 @@ var myDeserialiser = deserialiser.createDeserialiser(mySpec);
 
 var actualResult = myDeserialiser(serialisedData);
 
-assert.deepEqual(actualResult, desiredResult);
+tap.deepEqual(actualResult, desiredResult);
