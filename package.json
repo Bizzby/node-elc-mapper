@@ -1,10 +1,10 @@
 {
   "name": "elc-mapper",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "an experimental mapper library",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js",
+    "test": "tap --cov test/*.js",
     "lint": "eslint --fix lib test"
   },
   "repository": {
