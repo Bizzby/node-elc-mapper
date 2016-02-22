@@ -6,7 +6,26 @@ experimenting with mappers and javascript's total lack of type system...
 
 for implementation see `./lib/serialiser` and `./lib/deserialiser`
 
+## common opts
+
+These options apply to the `serialiser`/`deserialiser`, are optional, and are the last argument
+
+```
+var elcMapper = require('elc-mapper')
+
+var opts = {
+    treatNullAsUndefined: false
+}
+
+var mySerialiser = elcMapper.createSerialiser(mySpec, opts)
+var myDeserialiser = elcMapper.createDeserialiser(factory, mySpec, opts)
+```
+
+- `treatNullAsUndefined`: boolean, default false. elc-mapper's standard behaviour is to treat `null` and `undefined` as different values, and copy/mapper/transform `null`s as if they were any other desired value, whereas `undefined`s are ignored and never set on models/objects. By setting this value to true, `serialisers`/`deserialisers` will not set a value on model/object if it's strictly (`===`) equivalent to null or undefined. If the value returned by mapper/transform/default/etc is `null` then it will not be set!
+
 ## Serialiser
+
+
 
  spec definition:
  If key is just an empty object '{}', or none of the optional keys below are found
@@ -46,7 +65,8 @@ other than allow developer to signal intent.
      }
  }
  
- var mySerialiser = createSerialiser(mySpec)
+ // The
+ var mySerialiser = createSerialiser(mySpec, opts)
  
  // given a model of
  {
@@ -69,23 +89,23 @@ other than allow developer to signal intent.
 ## Deserialiser
 
 ```
-{
-    factory : // function that will be called, should return a new instance of the model ready to be configured.
-              // is passed the optional initilisation data incase it wishes to use that for initialisation
-              // we have "initialisation data" just because some models needs it.
 
-    // object containing info on how to create/fill/whatever each property on the new model instance
-    properties: {
-        propertyName : {
-            optional: 
-            mapper:   
-            transform: 
-            setter:   
-            sourceKey: 
-            default: 
-        }
+factory = // function that will be called, should return a new instance of the model ready to be configured.
+          // is passed the optional initilisation data incase it wishes to use that for initialisation
+          // we have "initialisation data" just because some models needs it.
+
+// object containing info on how to create/fill/whatever each property on the new model instance
+properties: {
+    propertyName : {
+        optional: 
+        mapper:   
+        transform: 
+        setter:   
+        sourceKey: 
+        default: 
     }
 }
+
 ```
 
 -`factory`: function that will be called, should return a new instance of the model ready to be configured. Is passed the optional initilisation data incase it wishes to use that for initialisation
@@ -104,17 +124,20 @@ other than allow developer to signal intent.
 example
 
 ```
+var factory = function(){
+    return new UserModel()
+}
 var mySpec = {
     id: {},
     name: {
-        mapper: function(user){ return user.firstname + ' ' + user.lastname }
+        mapper: function(data){ return data.firstname + ' ' + data.lastname }
     }
     team: {
         sourceKey: companyName
     }
 }
-var myDeserialiser = createDeserialiser(mySpec)
-// given a model of
+var myDeserialiser = createDeserialiser(factory, mySpec)
+// given serialised data of
 {
     id: 12,
     firstname: 'James',
@@ -122,7 +145,7 @@ var myDeserialiser = createDeserialiser(mySpec)
     companyName: 'rofly',
     meta: 'some string?'
 }
-// it would serialise to
+// it would deserialise to a model something like
 {
     id: 12,
     name: 'James Butler',

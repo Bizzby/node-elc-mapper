@@ -3,28 +3,27 @@
 var tap = require('tap')
 var deserialiser = require('../')
 
+var factory = function () { return new SomeUser() }
 var mySpec = {
-  factory: function () { return new SomeUser() },
-  properties: {
-    id: {},
-    name: {
-      mapper: function (serialisedUser) { return serialisedUser.firstname + ' ' + serialisedUser.lastname }
-    },
-    team: {
-      sourceKey: 'companyName'
-    },
-    seating: {
-      setter: 'setSeating'
-    },
-    meta: {
-      default: 'some string?'
-    },
-    seconds: {
-      transform: function (milliseconds) { return milliseconds / 1000 }
-    },
-    bad: {}
-  }
+  id: {},
+  name: {
+    mapper: function (serialisedUser) { return serialisedUser.firstname + ' ' + serialisedUser.lastname }
+  },
+  team: {
+    sourceKey: 'companyName'
+  },
+  seating: {
+    setter: 'setSeating'
+  },
+  meta: {
+    default: 'some string?'
+  },
+  seconds: {
+    transform: function (milliseconds) { return milliseconds / 1000 }
+  },
+  bad: {}
 }
+
 
 var SomeUser = function () {
 }
@@ -59,7 +58,7 @@ var desiredResult = {
   seconds: 3
 }
 
-var myDeserialiser = deserialiser.createDeserialiser(mySpec)
+var myDeserialiser = deserialiser.createDeserialiser(factory, mySpec)
 
 var actualResult = myDeserialiser(serialisedData)
 

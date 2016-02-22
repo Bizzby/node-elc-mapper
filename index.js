@@ -1,5 +1,7 @@
-var serialiser = require('./lib/serialiser');
-var deserialiser = require('./lib/deserialiser');
+'use strict'
+
+const serialiser = require('./lib/serialiser');
+const deserialiser = require('./lib/deserialiser');
 
 exports.createSerialiser = serialiser.createSerialiser;
 exports.serialiserSpecValidator = serialiser.validateSpec;
